@@ -3,6 +3,11 @@ module.exports = {
   env: {
     node: true,
   },
+  settings: {
+    'import/resolver': {
+      typescript: {},
+    },
+  },
   extends: [
     'airbnb-base',
     'plugin:@typescript-eslint/recommended',

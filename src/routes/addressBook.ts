@@ -1,11 +1,12 @@
 import express from 'express';
+import addressBookController from '@/controllers/addressBookController';
 
 const router = express.Router();
 
-router.get('/', (req, res) => res.json({ ok: true }));
-router.get('/:id', (req, res) => res.json({ ...req.params }));
-router.post('/', (req, res) => res.json({ ...req.body }));
-router.put('/:id', (req, res) => res.json({ ...req.body }));
-router.delete('/:id', (req, res) => res.json({ ...req.body }));
+router.get('/', addressBookController.getAll);
+router.get('/:id', addressBookController.getById);
+router.post('/', addressBookController.create);
+router.put('/:id', addressBookController.update);
+router.delete('/:id', addressBookController.delete);
 
 export default router;

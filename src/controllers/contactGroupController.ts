@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Contact } from '@/dataTypes';
+import { Group } from '@/dataTypes';
 import pool from '@/db/pool';
 import ApiResponse from '@/misc/ApiResponse';
 
@@ -16,9 +16,7 @@ export default {
         [addressBookId],
       )
       .then(results => {
-        response
-          .status(200)
-          .json(new ApiResponse<Contact[]>(true, results.rows));
+        response.status(200).json(new ApiResponse<Group[]>(true, results.rows));
       })
       .catch(error => {
         request.log.error(error);
@@ -43,7 +41,7 @@ export default {
 
         response
           .status(200)
-          .json(new ApiResponse<Contact>(true, results.rows[0]));
+          .json(new ApiResponse<Group>(true, results.rows[0]));
       })
       .catch(error => {
         request.log.error(error);
@@ -65,7 +63,7 @@ export default {
       .then(results => {
         response
           .status(200)
-          .json(new ApiResponse<Contact>(true, results.rows[0]));
+          .json(new ApiResponse<Group>(true, results.rows[0]));
       })
       .catch(error => {
         request.log.error(error);
@@ -87,7 +85,7 @@ export default {
       .then(results => {
         response
           .status(200)
-          .json(new ApiResponse<Contact>(true, results.rows[0]));
+          .json(new ApiResponse<Group>(true, results.rows[0]));
       })
       .catch(error => {
         request.log.error(error);

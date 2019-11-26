@@ -31,6 +31,8 @@
     "ext": "ts"
   },
   "dependencies": {
+    "@types/cors": "^2.8.6",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-pino-logger": "^4.0.0",
     "pg": "^7.14.0",

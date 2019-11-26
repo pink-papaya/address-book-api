@@ -3,31 +3,33 @@ import { AddressBook } from '@/dataTypes';
 import pool from '@/db/pool';
 import ApiResponse from '@/misc/ApiResponse';
 
+const defaultFields = `
+  *, 
+  coalesce(
+    (
+      SELECT array_to_json(array_agg(row_to_json(x)))
+      FROM (
+        SELECT name, phone, picture_url AS pictureUrl, group_id AS groupId
+        FROM contact c
+        WHERE c.address_book_id = ab.id
+      ) x
+    ),
+    '[]'
+  ) AS contacts, 
+  coalesce(
+    (
+      SELECT array_to_json(array_agg(row_to_json(x)))
+      FROM (
+        SELECT id, name, description, picture_url AS pictureUrl
+        FROM contact_group g
+        WHERE g.address_book_id = ab.id
+      ) x
+    ),
+    '[]'
+  ) AS groups
+`;
 const baseSelectQuery = `
-  SELECT
-    *, 
-    coalesce(
-      (
-        SELECT array_to_json(array_agg(row_to_json(x)))
-        FROM (
-          SELECT name, phone, picture_url AS pictureUrl, group_id AS groupId
-          FROM contact c
-          WHERE c.address_book_id = ab.id
-        ) x
-      ),
-      '[]'
-    ) AS contacts, 
-    coalesce(
-      (
-        SELECT array_to_json(array_agg(row_to_json(x)))
-        FROM (
-          SELECT name, description, picture_url AS pictureUrl
-          FROM contact_group g
-          WHERE g.address_book_id = ab.id
-        ) x
-      ),
-      '[]'
-    ) AS groups
+  SELECT ${defaultFields}
   FROM address_book ab
 `;
 
@@ -72,7 +74,7 @@ export default {
 
     pool
       .query(
-        'INSERT INTO address_book (username, password) VALUES ($1, $2) RETURNING *',
+        `INSERT INTO address_book (username, password) VALUES ($1, $2) RETURNING ${defaultFields}`,
         [username, password],
       )
       .then(results => {
@@ -92,7 +94,7 @@ export default {
 
     pool
       .query(
-        'UPDATE address_book SET password = $1 WHERE id = $2 RETURNING *',
+        `UPDATE address_book SET password = $1 WHERE id = $2 RETURNING ${defaultFields}`,
         [password, id],
       )
       .then(results => {

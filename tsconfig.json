@@ -6,10 +6,10 @@
     "moduleResolution": "node",
     "esModuleInterop": true,
     "sourceMap": true,
-    "baseUrl": ".",
+    "baseUrl": "./src",
     "types": ["jest", "node"],
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["./*"]
     },
     "outDir": "dist"
   },

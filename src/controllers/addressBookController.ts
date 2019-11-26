@@ -40,7 +40,8 @@ export default {
           .status(200)
           .json(new ApiResponse<AddressBook[]>(true, results.rows));
       })
-      .catch(() => {
+      .catch(error => {
+        request.log.error(error);
         response.status(500).json(new ApiResponse(false));
       });
   },
@@ -60,7 +61,8 @@ export default {
           .status(200)
           .json(new ApiResponse<AddressBook>(true, results.rows[0]));
       })
-      .catch(() => {
+      .catch(error => {
+        request.log.error(error);
         response.status(500).json(new ApiResponse(false));
       });
   },
@@ -78,7 +80,8 @@ export default {
           .status(200)
           .json(new ApiResponse<AddressBook>(true, results.rows[0]));
       })
-      .catch(() => {
+      .catch(error => {
+        request.log.error(error);
         response.status(500).json(new ApiResponse(false));
       });
   },
@@ -97,7 +100,8 @@ export default {
           .status(200)
           .json(new ApiResponse<AddressBook>(true, results.rows[0]));
       })
-      .catch(() => {
+      .catch(error => {
+        request.log.error(error);
         response.status(500).json(new ApiResponse(false));
       });
   },
@@ -110,7 +114,8 @@ export default {
       .then(() => {
         response.status(200).json(new ApiResponse(true));
       })
-      .catch(() => {
+      .catch(error => {
+        request.log.error(error);
         response.status(500).json(new ApiResponse(false));
       });
   },

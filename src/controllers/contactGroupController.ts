@@ -74,7 +74,6 @@ export default {
   },
 
   update(request: Request, response: Response): void {
-    const id = parseInt(request.params.id, 10);
     const addressBookId = parseInt(request.params.addressBookId, 10);
     const { name, description, pictureUrl } = request.body;
 
@@ -83,7 +82,7 @@ export default {
         `UPDATE contact_group SET name = $1, description = $2, picture_url = $3 
           WHERE id = $4 AND address_book_id = $5 
           RETURNING ${defaultFields}`,
-        [name, description, pictureUrl, id, addressBookId],
+        [name, description, pictureUrl, request.params.id, addressBookId],
       )
       .then(results => {
         response
@@ -97,13 +96,12 @@ export default {
   },
 
   delete(request: Request, response: Response): void {
-    const id = parseInt(request.params.id, 10);
     const addressBookId = parseInt(request.params.addressBookId, 10);
 
     pool
       .query(
         'DELETE FROM contact_group WHERE id = $1 AND address_book_id = $2',
-        [id, addressBookId],
+        [request.params.id, addressBookId],
       )
       .then(() => {
         response.status(200).json(new ApiResponse(true));

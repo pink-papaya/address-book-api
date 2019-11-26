@@ -51,15 +51,15 @@ export default {
   },
 
   create(request: Request, response: Response): void {
-    const { name, description, pictureUrl } = request.body;
+    const { id, name, description, pictureUrl } = request.body;
     const addressBookId = parseInt(request.params.addressBookId, 10);
 
     pool
       .query(
-        `INSERT INTO contact_group (name, description, picture_url, address_book_id) 
-          VALUES ($1, $2, $3, $4) 
+        `INSERT INTO contact_group (id, name, description, picture_url, address_book_id) 
+          VALUES ($1, $2, $3, $4, $5) 
           RETURNING ${defaultFields}`,
-        [name, description, pictureUrl, addressBookId],
+        [id, name, description, pictureUrl, addressBookId],
       )
       .then(results => {
         response

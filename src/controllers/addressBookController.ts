@@ -3,13 +3,16 @@ import { AddressBook } from '@/dataTypes';
 import pool from '@/db/pool';
 import ApiResponse from '@/misc/ApiResponse';
 
+import { defaultFields as contactDefaultFields } from '@/controllers/contactController';
+import { defaultFields as contactGroupDefaultFields } from '@/controllers/contactGroupController';
+
 const defaultFields = `
   *, 
   coalesce(
     (
       SELECT array_to_json(array_agg(row_to_json(x)))
       FROM (
-        SELECT name, phone, picture_url AS pictureUrl, group_id AS groupId
+        SELECT ${contactDefaultFields}
         FROM contact c
         WHERE c.address_book_id = ab.id
       ) x
@@ -20,7 +23,7 @@ const defaultFields = `
     (
       SELECT array_to_json(array_agg(row_to_json(x)))
       FROM (
-        SELECT id, name, description, picture_url AS pictureUrl
+        SELECT ${contactGroupDefaultFields}
         FROM contact_group g
         WHERE g.address_book_id = ab.id
       ) x

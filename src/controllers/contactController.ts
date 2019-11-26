@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
-import { AddressBook, Contact } from '@/dataTypes';
+import { Contact } from '@/dataTypes';
 import pool from '@/db/pool';
 import ApiResponse from '@/misc/ApiResponse';
 
-const defaultFields =
-  'name, phone, picture_url as pictureUrl, group_id as groupId';
+export const defaultFields =
+  'name, phone, picture_url as "pictureUrl", group_id as "groupId"';
 
 export default {
   getAll(request: Request, response: Response): void {

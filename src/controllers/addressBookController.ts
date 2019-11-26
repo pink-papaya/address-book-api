@@ -3,36 +3,38 @@ import { AddressBook } from '@/dataTypes';
 import pool from '@/db/pool';
 import ApiResponse from '@/misc/ApiResponse';
 
-const defaultFields = `
-  *, 
-  coalesce(
-    (
-      SELECT array_to_json(array_agg(row_to_json(x)))
-      FROM (
-        SELECT name, phone, picture_url as pictureUrl, group_id as groupId
-        FROM contact c
-        WHERE c.address_book_id = ab.id
-      ) x
-    ),
-    '[]'
-  ) AS contacts, 
-  coalesce(
-    (
-      SELECT array_to_json(array_agg(row_to_json(x)))
-      FROM (
-        SELECT name, description, picture_url as pictureUrl
-        FROM contact_group g
-        WHERE g.address_book_id = ab.id
-      ) x
-    ),
-    '[]'
-  ) AS groups
+const baseSelectQuery = `
+  SELECT
+    *, 
+    coalesce(
+      (
+        SELECT array_to_json(array_agg(row_to_json(x)))
+        FROM (
+          SELECT name, phone, picture_url AS pictureUrl, group_id AS groupId
+          FROM contact c
+          WHERE c.address_book_id = ab.id
+        ) x
+      ),
+      '[]'
+    ) AS contacts, 
+    coalesce(
+      (
+        SELECT array_to_json(array_agg(row_to_json(x)))
+        FROM (
+          SELECT name, description, picture_url AS pictureUrl
+          FROM contact_group g
+          WHERE g.address_book_id = ab.id
+        ) x
+      ),
+      '[]'
+    ) AS groups
+  FROM address_book ab
 `;
 
 export default {
   getAll(request: Request, response: Response): void {
     pool
-      .query(`SELECT ${defaultFields} FROM address_book ab`)
+      .query(baseSelectQuery)
       .then(results => {
         response
           .status(200)
@@ -47,7 +49,7 @@ export default {
     const id = parseInt(request.params.id, 10);
 
     pool
-      .query(`SELECT ${defaultFields} FROM address_book ab WHERE id = $1`, [id])
+      .query(`${baseSelectQuery} WHERE id = $1`, [id])
       .then(results => {
         if (!results.rowCount) {
           response.status(404).send();
@@ -58,8 +60,7 @@ export default {
           .status(200)
           .json(new ApiResponse<AddressBook>(true, results.rows[0]));
       })
-      .catch((e) => {
-        console.log(e);
+      .catch(() => {
         response.status(500).json(new ApiResponse(false));
       });
   },

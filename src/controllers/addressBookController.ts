@@ -14,7 +14,7 @@ const defaultFields = `
       FROM (
         SELECT ${contactDefaultFields}
         FROM contact c
-        WHERE c.address_book_id = ab.id
+        WHERE c.address_book_id = address_book.id
       ) x
     ),
     '[]'
@@ -25,7 +25,7 @@ const defaultFields = `
       FROM (
         SELECT ${contactGroupDefaultFields}
         FROM contact_group g
-        WHERE g.address_book_id = ab.id
+        WHERE g.address_book_id = address_book.id
       ) x
     ),
     '[]'
@@ -33,7 +33,7 @@ const defaultFields = `
 `;
 const baseSelectQuery = `
   SELECT ${defaultFields}
-  FROM address_book ab
+  FROM address_book
 `;
 
 export default {

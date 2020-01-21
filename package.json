@@ -13,7 +13,7 @@
     "watch": "tsc -w",
     "dev": "nodemon",
     "start:dev": "node -r tsconfig-paths/register -r ts-node/register ./src/app.ts",
-    "test:unit": "vue-cli-service test:unit",
+    "test:unit": "jest",
     "lint": "eslint \"{src,tests}/**/*.{js,ts,json}\"",
     "prettier:check": "prettier \"**/*.{js,ts,json}\" --list-different",
     "prettier:format-all": "prettier --write \"**/*.{js,ts,json}\""
@@ -31,7 +31,6 @@
     "ext": "ts"
   },
   "dependencies": {
-    "@types/cors": "^2.8.6",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-pino-logger": "^4.0.0",
@@ -39,6 +38,7 @@
     "tsconfig-paths": "^3.9.0"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.6",
     "@types/express": "^4.17.2",
     "@types/express-pino-logger": "^4.0.2",
     "@types/jest": "^24.0.23",

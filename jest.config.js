@@ -1,4 +1,6 @@
 module.exports = {
+  preset: 'ts-jest',
+  testEnvironment: 'node',
   moduleFileExtensions: ['js', 'json', 'ts'],
   transform: {
     '^.+\\.tsx?$': 'ts-jest',
@@ -14,10 +16,10 @@ module.exports = {
     'jest-watch-typeahead/testname',
   ],
   setupFiles: ['./tests/unit/setup.ts'],
-  globals: {
-    'ts-jest': {
-      babelConfig: true,
-    },
-  },
-  collectCoverageFrom: ['src/**/*.{js,ts,vue}', '!src/main.ts'],
+  // globals: {
+  //   'ts-jest': {
+  //     babelConfig: true,
+  //   },
+  // },
+  collectCoverageFrom: ['src/**/*.{js,ts}', '!src/main.ts'],
 };

@@ -7,7 +7,7 @@ import { defaultFields as contactDefaultFields } from '@/controllers/contactCont
 import { defaultFields as contactGroupDefaultFields } from '@/controllers/contactGroupController';
 
 const defaultFields = `
-  *, 
+  *,
   coalesce(
     (
       SELECT array_to_json(array_agg(row_to_json(x)))
@@ -18,15 +18,15 @@ const defaultFields = `
       ) x
     ),
     '[]'
-  ) AS contacts, 
+  ) AS contacts,
   coalesce(
     (
-      SELECT array_to_json(array_agg(row_to_json(x)))
+      SELECT array_to_json(array_agg(row_to_json(y)))
       FROM (
         SELECT ${contactGroupDefaultFields}
         FROM contact_group g
         WHERE g.address_book_id = address_book.id
-      ) x
+      ) y
     ),
     '[]'
   ) AS groups
@@ -37,8 +37,8 @@ const baseSelectQuery = `
 `;
 
 export default {
-  getAll(request: Request, response: Response): void {
-    pool
+  getAll(request: Request, response: Response): Promise<void> {
+    return pool
       .query(baseSelectQuery)
       .then(results => {
         response
@@ -51,10 +51,10 @@ export default {
       });
   },
 
-  getById(request: Request, response: Response): void {
+  getById(request: Request, response: Response): Promise<void> {
     const id = parseInt(request.params.id, 10);
 
-    pool
+    return pool
       .query(`${baseSelectQuery} WHERE id = $1`, [id])
       .then(results => {
         if (!results.rowCount) {
@@ -72,10 +72,10 @@ export default {
       });
   },
 
-  create(request: Request, response: Response): void {
+  create(request: Request, response: Response): Promise<void> {
     const { username, password } = request.body;
 
-    pool
+    return pool
       .query(
         `INSERT INTO address_book (username, password) VALUES ($1, $2) RETURNING ${defaultFields}`,
         [username, password],
@@ -91,11 +91,11 @@ export default {
       });
   },
 
-  update(request: Request, response: Response): void {
+  update(request: Request, response: Response): Promise<void> {
     const id = parseInt(request.params.id, 10);
     const { password } = request.body;
 
-    pool
+    return pool
       .query(
         `UPDATE address_book SET password = $1 WHERE id = $2 RETURNING ${defaultFields}`,
         [password, id],
@@ -111,10 +111,10 @@ export default {
       });
   },
 
-  delete(request: Request, response: Response): void {
+  delete(request: Request, response: Response): Promise<void> {
     const id = parseInt(request.params.id, 10);
 
-    pool
+    return pool
       .query('DELETE FROM address_book WHERE id = $1', [id])
       .then(() => {
         response.status(200).json(new ApiResponse(true));

@@ -6,13 +6,12 @@
     "moduleResolution": "node",
     "esModuleInterop": true,
     "sourceMap": true,
-    "baseUrl": "./src",
+    "baseUrl": "./",
     "types": ["jest", "node"],
     "paths": {
-      "@/*": ["./*"]
-    },
-    "outDir": "dist"
+      "@/*": ["./src/*"]
+    }
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "tests/**/*.ts"],
   "exclude": ["node_modules"]
 }

@@ -38,9 +38,7 @@ describe('addressBookController', () => {
       await addressBookController.getAll(request, response);
 
       expect(response.status).toHaveBeenCalledWith(500);
-      expect(response.json).toHaveBeenCalledWith(
-        new ApiResponse(false),
-      );
+      expect(response.json).toHaveBeenCalledWith(new ApiResponse(false));
 
       expect(request.log.error).toHaveBeenCalledTimes(1);
       expect(request.log.error).toHaveBeenCalledWith(error);

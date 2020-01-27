@@ -6,11 +6,11 @@
   "author": "Ricardo Tavares",
   "license": "MIT",
   "scripts": {
-    "build": "tsc",
+    "clean": "rimraf dist/*",
+    "build": "yarn clean && tsc -p tsconfig.release.json",
     "start": "yarn serve",
     "serve": "node -r ./tsconfig-paths-bootstrap.js dist/app.js",
     "watch-node": "nodemon dist/app.js",
-    "watch": "tsc -w",
     "dev": "nodemon",
     "start:dev": "node -r tsconfig-paths/register -r ts-node/register ./src/app.ts",
     "test:unit": "jest",
@@ -57,6 +57,7 @@
     "jest-watch-typeahead": "^0.4.2",
     "nodemon": "^2.0.1",
     "prettier": "^1.19.1",
+    "rimraf": "^3.0.0",
     "ts-jest": "^24.3.0",
     "ts-node": "^8.5.2",
     "typescript": "^3.7.2"

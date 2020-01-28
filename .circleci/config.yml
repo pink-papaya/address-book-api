@@ -1,0 +1,79 @@
+version: 2
+
+executors:
+  default-executor:
+    docker:
+      - image: circleci/node:12.6
+
+jobs:
+  install-dependencies:
+    executor: default-executor
+    steps:
+      - checkout
+
+      - restore_cache:
+        name: Restore Yarn Package Cache
+        keys:
+          - dependency-cache-{{ checksum "yarn.lock" }}
+
+      - run:
+        name: Install dependencies
+        command: yarn install --frozen-lockfile
+
+      - save_cache:
+        name: Save Yarn Package Cache
+        paths:
+          - ~/.cache
+        key: dependency-cache-{{ checksum "yarn.lock" }}
+
+      - persist_to_workspace:
+        root: .
+        paths: .
+
+  check-prettier:
+    executor: default-executor
+    steps:
+      - attach_workspace:
+        at: .
+      - run:
+        name: 'Run prettier check on project files'
+        command: yarn prettier:check
+
+  check-linter:
+    executor: default-executor
+    steps:
+      - attach_workspace:
+        at: .
+      - run:
+        name: 'Run linter'
+        command: yarn lint
+
+  run-unit-tests:
+    executor: default-executor
+    steps:
+      - attach_workspace:
+        at: .
+      - run:
+        name: Run unit tests
+        command: yarn test:unit --ci --runInBand --reporters="default" --reporters="jest-junit"
+        environment:
+          JEST_JUNIT_OUTPUT: 'reports/junit/js-test-results.xml'
+      - store_test_results:
+        path: reports/junit
+      - store_artifacts:
+        path: reports/junit
+
+workflows:
+  version: 2
+  lint-and-test:
+    jobs:
+      - install-dependencies
+      - check-prettier:
+        requires:
+          - install-dependencies
+      - check-linter:
+        requires:
+          - install-dependencies
+      - run-unit-tests:
+        requires:
+          - install-dependencies

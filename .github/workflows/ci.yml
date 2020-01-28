@@ -3,8 +3,7 @@ name: CI
 on: [push]
 
 jobs:
-  build:
-
+  ci:
     runs-on: ubuntu-latest
 
     strategy:
@@ -13,16 +12,31 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
+      
+    - name: Cache node modules
+      uses: actions/cache@v1
+      with:
+        path: ~/.yarn # yarn cache files are stored in `~/.yarn` on Linux/macOS
+        key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
+      
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+    
     - name: install dependencies
       run: yarn install --frozen-lockfile
+    
     - name: lint files
       run: yarn lint
+    
     - name: run prettier check
       run: yarn prettier:check
+    
     - name: run unit tests
       run: yarn test:unit --ci --runInBand --reporters="default" --reporters="jest-junit"
       env:

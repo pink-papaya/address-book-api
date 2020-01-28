@@ -1,0 +1,30 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: install dependencies
+      run: yarn install --frozen-lockfile
+    - name: lint files
+      run: yarn lint
+    - name: run prettier check
+      run: yarn prettier:check
+    - name: run unit tests
+      run: yarn test:unit --ci --runInBand --reporters="default" --reporters="jest-junit"
+      env:
+        JEST_JUNIT_OUTPUT_DIR: 'test-results/jest'
+        JEST_JUNIT_OUTPUT_NAME: results.xml

@@ -27,6 +27,7 @@ describe('addressBookController', () => {
       );
 
       expect(request.log.error).toHaveBeenCalledTimes(0);
+      expect(1).toBe(2);
     });
 
     it('returns a 200 response with the db rows', async () => {

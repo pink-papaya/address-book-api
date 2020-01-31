@@ -5,14 +5,18 @@ export const mockExpressResponse = (): Response => {
 
   response.status = jest.fn().mockReturnValue(response);
   response.json = jest.fn().mockReturnValue(response);
+  response.send = jest.fn().mockReturnValue(response);
 
   return response as Response;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const mockExpressRequest = (body?: unknown): Request | any => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+/* eslint-disable @typescript-eslint/no-explicit-any */
+export const mockExpressRequest = (
+  params: { [key: string]: unknown } = {},
+  body: { [key: string]: unknown } = {},
+): Request | any => {
   const request: Request | any = {
+    params,
     body,
   };
 

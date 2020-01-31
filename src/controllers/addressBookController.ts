@@ -91,6 +91,9 @@ export default {
       });
   },
 
+  /**
+   * Update an address book's password
+   */
   update(request: Request, response: Response): Promise<void> {
     const id = parseInt(request.params.id, 10);
     const { password } = request.body;

@@ -7,10 +7,10 @@ export const defaultFields =
   'id, name, description, picture_url as "pictureUrl"';
 
 export default {
-  getAll(request: Request, response: Response): void {
+  getAll(request: Request, response: Response): Promise<void> {
     const addressBookId = parseInt(request.params.addressBookId, 10);
 
-    pool
+    return pool
       .query(
         `SELECT ${defaultFields} FROM contact_group WHERE address_book_id = $1`,
         [addressBookId],
@@ -24,11 +24,11 @@ export default {
       });
   },
 
-  getById(request: Request, response: Response): void {
+  getById(request: Request, response: Response): Promise<void> {
     const id = parseInt(request.params.id, 10);
     const addressBookId = parseInt(request.params.addressBookId, 10);
 
-    pool
+    return pool
       .query(
         `SELECT ${defaultFields} FROM contact_group WHERE id = $1 AND address_book_id = $2`,
         [id, addressBookId],
@@ -49,14 +49,14 @@ export default {
       });
   },
 
-  create(request: Request, response: Response): void {
+  create(request: Request, response: Response): Promise<void> {
     const { id, name, description, pictureUrl } = request.body;
     const addressBookId = parseInt(request.params.addressBookId, 10);
 
-    pool
+    return pool
       .query(
-        `INSERT INTO contact_group (id, name, description, picture_url, address_book_id) 
-          VALUES ($1, $2, $3, $4, $5) 
+        `INSERT INTO contact_group (id, name, description, picture_url, address_book_id)
+          VALUES ($1, $2, $3, $4, $5)
           RETURNING ${defaultFields}`,
         [id, name, description, pictureUrl, addressBookId],
       )
@@ -71,14 +71,14 @@ export default {
       });
   },
 
-  update(request: Request, response: Response): void {
+  update(request: Request, response: Response): Promise<void> {
     const addressBookId = parseInt(request.params.addressBookId, 10);
     const { name, description, pictureUrl } = request.body;
 
-    pool
+    return pool
       .query(
-        `UPDATE contact_group SET name = $1, description = $2, picture_url = $3 
-          WHERE id = $4 AND address_book_id = $5 
+        `UPDATE contact_group SET name = $1, description = $2, picture_url = $3
+          WHERE id = $4 AND address_book_id = $5
           RETURNING ${defaultFields}`,
         [name, description, pictureUrl, request.params.id, addressBookId],
       )
@@ -93,10 +93,10 @@ export default {
       });
   },
 
-  delete(request: Request, response: Response): void {
+  delete(request: Request, response: Response): Promise<void> {
     const addressBookId = parseInt(request.params.addressBookId, 10);
 
-    pool
+    return pool
       .query(
         'DELETE FROM contact_group WHERE id = $1 AND address_book_id = $2',
         [request.params.id, addressBookId],

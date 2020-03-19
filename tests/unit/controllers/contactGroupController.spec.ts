@@ -1,4 +1,4 @@
-import contactController from '@/controllers/contactController';
+import contactGroupController from '@/controllers/contactGroupController';
 import { mockExpressRequest, mockExpressResponse } from '../utils';
 import pool from '@/db/pool';
 import ApiResponse from '@/misc/ApiResponse';
@@ -12,15 +12,15 @@ afterEach(() => {
 const query = pool.query as jest.Mock;
 const response = mockExpressResponse();
 
-describe('contactController', () => {
+describe('contactGroupController', () => {
   describe('getAll', () => {
-    it('returns a 200 response with the contacts of the given addressBookId', async () => {
+    it('returns a 200 response with the contact groups of the given addressBookId', async () => {
       const data = { rows: 'rows' };
       query.mockReturnValue(Promise.resolve(data));
 
       const addressBookId = 1;
       const request = mockExpressRequest({ addressBookId });
-      await contactController.getAll(request, response);
+      await contactGroupController.getAll(request, response);
 
       expect(query).toHaveBeenCalledWith(expect.any(String), [addressBookId]);
 
@@ -37,7 +37,7 @@ describe('contactController', () => {
       query.mockReturnValue(Promise.reject(error));
 
       const request = mockExpressRequest();
-      await contactController.getAll(request, response);
+      await contactGroupController.getAll(request, response);
 
       expect(response.status).toHaveBeenCalledWith(500);
       expect(response.json).toHaveBeenCalledWith(new ApiResponse(false));
@@ -47,19 +47,19 @@ describe('contactController', () => {
     });
   });
 
-  describe('getByName', () => {
+  describe('getById', () => {
     it('returns a 200 response with the record when it exists', async () => {
       const data = { rows: ['row1'], rowCount: 1 };
       query.mockReturnValue(Promise.resolve(data));
 
-      const name = 'John Doe';
+      const id = 123;
       const addressBookId = 1;
-      const request = mockExpressRequest({ addressBookId, name });
+      const request = mockExpressRequest({ addressBookId, id });
 
-      await contactController.getByName(request, response);
+      await contactGroupController.getById(request, response);
 
       expect(query).toHaveBeenCalledWith(expect.any(String), [
-        name,
+        id,
         addressBookId,
       ]);
       expect(response.status).toHaveBeenCalledWith(200);
@@ -79,7 +79,7 @@ describe('contactController', () => {
 
       const request = mockExpressRequest();
 
-      await contactController.getByName(request, response);
+      await contactGroupController.getById(request, response);
 
       expect(response.status).toHaveBeenCalledWith(404);
       expect(response.status).toHaveBeenCalledTimes(1);
@@ -95,7 +95,7 @@ describe('contactController', () => {
       query.mockReturnValue(Promise.reject(error));
 
       const request = mockExpressRequest();
-      await contactController.getByName(request, response);
+      await contactGroupController.getById(request, response);
 
       expect(response.status).toHaveBeenCalledWith(500);
       expect(response.status).toHaveBeenCalledTimes(1);
@@ -115,28 +115,28 @@ describe('contactController', () => {
       query.mockReturnValue(Promise.resolve(data));
 
       const addressBookId = 1;
-      const name = 'string';
-      const phone = 'string1';
-      const groupId = 'string2';
+      const id = 123;
+      const name = 'string1';
+      const description = 'string2';
       const pictureUrl = 'string3';
       const request = mockExpressRequest(
         { addressBookId },
         {
+          id,
           name,
-          phone,
           pictureUrl,
-          groupId,
+          description,
         },
       );
 
-      await contactController.create(request, response);
+      await contactGroupController.create(request, response);
 
       expect(query).toHaveBeenCalledWith(expect.any(String), [
+        id,
         name,
-        phone,
+        description,
         pictureUrl,
         addressBookId,
-        groupId,
       ]);
       expect(response.status).toHaveBeenCalledWith(200);
       expect(response.status).toHaveBeenCalledTimes(1);
@@ -154,7 +154,7 @@ describe('contactController', () => {
       query.mockReturnValue(Promise.reject(error));
 
       const request = mockExpressRequest();
-      await contactController.create(request, response);
+      await contactGroupController.create(request, response);
 
       expect(response.status).toHaveBeenCalledWith(500);
       expect(response.status).toHaveBeenCalledTimes(1);
@@ -174,29 +174,26 @@ describe('contactController', () => {
       query.mockReturnValue(Promise.resolve(data));
 
       const addressBookId = 1;
-      const originalName = 'old string';
+      const id = 123;
       const name = 'string';
-      const phone = 'string1';
-      const groupId = 'string2';
+      const description = 'string1';
       const pictureUrl = 'string3';
       const request = mockExpressRequest(
-        { name: originalName, addressBookId },
+        { id, addressBookId },
         {
           name,
-          phone,
+          description,
           pictureUrl,
-          groupId,
         },
       );
 
-      await contactController.update(request, response);
+      await contactGroupController.update(request, response);
 
       expect(query).toHaveBeenCalledWith(expect.any(String), [
         name,
-        phone,
+        description,
         pictureUrl,
-        groupId,
-        originalName,
+        id,
         addressBookId,
       ]);
 
@@ -216,7 +213,7 @@ describe('contactController', () => {
       query.mockReturnValue(Promise.reject(error));
 
       const request = mockExpressRequest();
-      await contactController.update(request, response);
+      await contactGroupController.update(request, response);
 
       expect(response.status).toHaveBeenCalledWith(500);
       expect(response.status).toHaveBeenCalledTimes(1);
@@ -234,13 +231,13 @@ describe('contactController', () => {
       query.mockReturnValue(Promise.resolve());
 
       const addressBookId = 1;
-      const name = 'string';
-      const request = mockExpressRequest({ addressBookId, name });
+      const id = 123;
+      const request = mockExpressRequest({ addressBookId, id });
 
-      await contactController.delete(request, response);
+      await contactGroupController.delete(request, response);
 
       expect(query).toHaveBeenCalledWith(expect.any(String), [
-        name,
+        id,
         addressBookId,
       ]);
 
@@ -258,7 +255,7 @@ describe('contactController', () => {
       query.mockReturnValue(Promise.reject(error));
 
       const request = mockExpressRequest();
-      await contactController.delete(request, response);
+      await contactGroupController.delete(request, response);
 
       expect(response.status).toHaveBeenCalledWith(500);
       expect(response.status).toHaveBeenCalledTimes(1);

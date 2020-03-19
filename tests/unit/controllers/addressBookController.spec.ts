@@ -1,7 +1,7 @@
 import addressBookController from '@/controllers/addressBookController';
-import { mockExpressRequest, mockExpressResponse } from '../utils';
 import pool from '@/db/pool';
 import ApiResponse from '@/misc/ApiResponse';
+import { mockExpressRequest, mockExpressResponse } from '../utils';
 
 jest.mock('pg');
 

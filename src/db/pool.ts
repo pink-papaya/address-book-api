@@ -6,7 +6,4 @@ const connectionString =
 
 export default new Pool({
   connectionString,
-  ssl: {
-    rejectUnauthorized: false,
-  },
 });

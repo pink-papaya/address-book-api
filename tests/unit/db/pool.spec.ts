@@ -13,6 +13,9 @@ describe('pool', () => {
     return import('@/db/pool').then(() => {
       expect(Pool).toHaveBeenCalledWith({
         connectionString: process.env.DATABASE_URL,
+        ssl: {
+          rejectUnauthorized: false,
+        },
       });
     });
   });
